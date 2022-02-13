@@ -1,15 +1,12 @@
 import faker from 'faker';
 import PropTypes from 'prop-types';
-import { Icon } from '@iconify/react';
 import { formatDistance } from 'date-fns';
 import { Link as RouterLink } from 'react-router-dom';
-import arrowIosForwardFill from '@iconify/icons-eva/arrow-ios-forward-fill';
 // material
-import { Box, Stack, Link, Card, Button, Divider, Typography, CardHeader } from '@mui/material';
+import { Box, Card, ImageList, ImageListItem, Link, Stack, Typography } from '@mui/material';
 // utils
 import { mockImgCover } from '../../../utils/mockImages';
 //
-import Scrollbar from '../../Scrollbar';
 
 // ----------------------------------------------------------------------
 
@@ -33,56 +30,49 @@ function NewsItem({ news }) {
   const { image, title, description, postedAt } = news;
 
   return (
-    <Stack direction="row" alignItems="center" spacing={2}>
+    <Stack direction='row' alignItems='center' spacing={2}>
       <Box
-        component="img"
+        component='img'
         alt={title}
         src={image}
         sx={{ width: 48, height: 48, borderRadius: 1.5 }}
       />
       <Box sx={{ minWidth: 240 }}>
-        <Link to="#" color="inherit" underline="hover" component={RouterLink}>
-          <Typography variant="subtitle2" noWrap>
+        <Link to='#' color='inherit' underline='hover' component={RouterLink}>
+          <Typography variant='subtitle2' noWrap>
             {title}
           </Typography>
         </Link>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+        <Typography variant='body2' sx={{ color: 'text.secondary' }} noWrap>
           {description}
         </Typography>
       </Box>
-      <Typography variant="caption" sx={{ pr: 3, flexShrink: 0, color: 'text.secondary' }}>
+      <Typography variant='caption' sx={{ pr: 3, flexShrink: 0, color: 'text.secondary' }}>
         {formatDistance(postedAt, new Date())}
       </Typography>
     </Stack>
   );
 }
 
-export default function AppNewsUpdate() {
+export default function AppNewsUpdate({ images }) {
   return (
     <Card>
-      <CardHeader title="News Update" />
-
-      <Scrollbar>
-        <Stack spacing={3} sx={{ p: 3, pr: 0 }}>
-          {NEWS.map((news) => (
-            <NewsItem key={news.title} news={news} />
-          ))}
-        </Stack>
-      </Scrollbar>
-
-      <Divider />
-
-      <Box sx={{ p: 2, textAlign: 'right' }}>
-        <Button
-          to="#"
-          size="small"
-          color="inherit"
-          component={RouterLink}
-          endIcon={<Icon icon={arrowIosForwardFill} />}
-        >
-          View all
-        </Button>
-      </Box>
+      {images != null && (
+        <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+          {
+            images.map((img, index) => (
+              <ImageListItem key={index}>
+                <img
+                  src={`${img}`}
+                  srcSet={`${img}`}
+                  alt={index}
+                  loading='lazy'
+                />
+              </ImageListItem>
+            ))}
+        </ImageList>
+        )
+      }
     </Card>
   );
 }

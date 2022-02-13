@@ -34,17 +34,16 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const TOTAL = 714000;
 
-export default function AppWeeklySales() {
+export default function AppWeeklySales({text, info}) {
   return (
     <RootStyle>
       <IconWrapperStyle>
         <Icon icon={androidFilled} width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{fShortenNumber(TOTAL)}</Typography>
+      <Typography variant="h3">{text}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-        Weekly Sales
+        {info}
       </Typography>
     </RootStyle>
   );

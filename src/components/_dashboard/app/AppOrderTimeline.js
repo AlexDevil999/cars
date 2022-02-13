@@ -1,49 +1,34 @@
-import faker from 'faker';
 import PropTypes from 'prop-types';
 // material
-import { Card, Typography, CardHeader, CardContent } from '@mui/material';
 import {
-  Timeline,
-  TimelineItem,
-  TimelineContent,
+  Card,
+  CardContent,
+  CardHeader,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
+import {
+  LoadingButton,
   TimelineConnector,
-  TimelineSeparator,
-  TimelineDot
+  TimelineContent,
+  TimelineDot,
+  TimelineItem,
+  TimelineSeparator
 } from '@mui/lab';
 // utils
 import { fDateTime } from '../../../utils/formatTime';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-const TIMELINES = [
-  {
-    title: '1983, orders, $4220',
-    time: faker.date.past(),
-    type: 'order1'
-  },
-  {
-    title: '12 Invoices have been paid',
-    time: faker.date.past(),
-    type: 'order2'
-  },
-  {
-    title: 'Order #37745 from September',
-    time: faker.date.past(),
-    type: 'order3'
-  },
-  {
-    title: 'New order placed #XF-2356',
-    time: faker.date.past(),
-    type: 'order4'
-  },
-  {
-    title: 'New order placed #XF-2346',
-    time: faker.date.past(),
-    type: 'order5'
-  }
-];
 
-// ----------------------------------------------------------------------
+const url = 'https://auto-leasing-bank.herokuapp.com/api/calculator/';
 
 OrderItem.propTypes = {
   item: PropTypes.object,
@@ -68,8 +53,8 @@ function OrderItem({ item, isLast }) {
         {isLast ? null : <TimelineConnector />}
       </TimelineSeparator>
       <TimelineContent>
-        <Typography variant="subtitle2">{title}</Typography>
-        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+        <Typography variant='subtitle2'>{title}</Typography>
+        <Typography variant='caption' sx={{ color: 'text.secondary' }}>
           {fDateTime(time)}
         </Typography>
       </TimelineContent>
@@ -77,7 +62,48 @@ function OrderItem({ item, isLast }) {
   );
 }
 
-export default function AppOrderTimeline() {
+export default function AppOrderTimeline({ price }) {
+  const [percent, setPercent] = useState([]);
+  const [res, setRes] = useState({});
+  const [payMonth, setPayMonth] = useState(0);
+  const [fee, setFee] = useState(0);
+
+
+  const fetchData = async () => {
+    const response = await fetch(url);
+    const percent = await response.json();
+    setPercent(percent.percentage);
+  };
+  useEffect(() => {
+      fetchData();
+    },
+    []
+  );
+  const handleSubmit = async () => {
+    try {
+      const response = await axios({
+        method: 'POST',
+        url: url,
+        data: {
+          total_sum: price,
+          month: res.month,
+          annual_percentage: res.annual_percentage,
+          an_initial_fee: fee
+        }
+      });
+      console.log(response.data);
+    } catch (e) {
+
+    }
+  };
+
+  const handleChange = (event) => {
+    setRes(event.target.value);
+  };
+  const handleFee = (event) => {
+    setFee(event.target.value);
+  };
+  console.log(fee);
   return (
     <Card
       sx={{
@@ -86,13 +112,59 @@ export default function AppOrderTimeline() {
         }
       }}
     >
-      <CardHeader title="Order Timeline" />
+      <CardHeader title='Калькулятор' />
       <CardContent>
-        <Timeline>
-          {TIMELINES.map((item, index) => (
-            <OrderItem key={item.title} item={item} isLast={index === TIMELINES.length - 1} />
-          ))}
-        </Timeline>
+        <Stack spacing={3}>
+          <FormControl fullWidth>
+            <InputLabel id='demo-simple-select-label'>Кол-во месяцев</InputLabel>
+            <Select
+              labelId='demo-simple-select-label'
+              id='demo-simple-select'
+              value={res.month}
+              label='Кол-во месяцев'
+              onChange={handleChange}
+            >
+              {
+                percent != null && (
+                  percent.map((p, index) => (
+                    <MenuItem value={p.annual_percentage}>{p.month}</MenuItem>
+                  ))
+                )
+              }
+            </Select>
+          </FormControl>
+          <InputLabel id='demo-simple-select-label'>Цена</InputLabel>
+          <TextField
+            fullWidth
+            autoComplete='price'
+            type='number'
+            value={price}
+          />
+          <InputLabel id='demo-simple-select-label'>Первоначальный взнос</InputLabel>
+          <TextField
+            fullWidth
+            autoComplete='price'
+            type='number'
+            value={fee}
+            onChange={handleFee}
+          />
+          <InputLabel id='demo-simple-select-label'>Платеж месяца</InputLabel>
+          <TextField
+            fullWidth
+            autoComplete='price'
+            type='number'
+            value={payMonth}
+          />
+          <LoadingButton
+            fullWidth
+            size='large'
+            type='submit'
+            variant='contained'
+            onClick={handleSubmit}
+          >
+            Посчитать
+          </LoadingButton>
+        </Stack>
       </CardContent>
     </Card>
   );

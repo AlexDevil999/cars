@@ -7,9 +7,10 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import DashboardApp from './pages/DashboardApp';
 import Products from './pages/Products';
-import Blog from './pages/Blog';
+import PageCars from './pages/PageCars';
 import User from './pages/User';
 import NotFound from './pages/Page404';
+import CreateStory from './pages/CreateStory';
 
 // ----------------------------------------------------------------------
 
@@ -20,10 +21,11 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
-        { path: 'app', element: <DashboardApp /> },
+        { path: ':id', element: <DashboardApp /> },
+        { path: 'create', element: <CreateStory /> },
         { path: 'user', element: <User /> },
         { path: 'products', element: <Products /> },
-        { path: 'blog', element: <Blog /> }
+        { path: 'cars', element: <PageCars /> }
       ]
     },
     {
