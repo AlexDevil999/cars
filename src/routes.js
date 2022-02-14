@@ -20,7 +20,7 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" replace /> },
+        { element: <Navigate to="/dashboard/cars" replace /> },
         { path: ':id', element: <DashboardApp /> },
         { path: 'create', element: <CreateStory /> },
         { path: 'user', element: <User /> },

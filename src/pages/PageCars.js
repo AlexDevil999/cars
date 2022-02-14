@@ -58,7 +58,6 @@ export default function PageCars() {
             Новинки машин
           </Typography>
           <Button
-            target="_blank"
             variant='contained'
             component={RouterLink}
             to='/dashboard/create'

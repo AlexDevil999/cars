@@ -110,7 +110,6 @@ export default function CarCard({ post, index, link }) {
               color='inherit'
               variant='subtitle2'
               underline='hover'
-              target="_blank"
               component={RouterLink}
               sx={{
                 ...(latestPostLarge && { typography: 'h5', height: 60 }),
